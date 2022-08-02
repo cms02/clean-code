@@ -87,3 +87,52 @@ public List<Cell> getFlaggedCells() {
     return flaggedCells;
 }
 ```
+
+<a name="3"></a>
+
+## 그릇된 정보를 피하라
+
+- 나름대로 널리 쓰이는 의미가 있는 단어를 다른 의미로 사용하면 안된다.
+  - hp, aix, sco는 변수 이름으로 적합하지 않다.
+- 개발자에게는 특수한 의미를 가지는 단어(List 등)는 실제 컨테이너가 List가 아닌 이상 accountList와 같이 변수명에 붙이지 말자. 차라리 accountGroup, bunchOfAccounts, accounts등으로 명명하자
+- 서로 흡사한 이름을 사용하지 않도록 주의한다.
+
+<a name="4"></a>
+
+## 의미 있게 구분하라
+
+- 연속적인 숫자를 덧붙인 이름(a1, a2, ..., aN)은 저자 의도가 전혀 드러나지 않는 이름이다.
+- 불용어(noise word)를 추가한 이름은 아무런 정보를 제공하지 못한다.
+  - 클래스 이름에 Info, Data를 붙일 경우
+    - `ProductInfo, ProductData`
+  - 변수명에 `variable` , 테이블 이름에 `table`
+  - `Name` VS `NameString`, `money` VS `moneyAmount`, `message` VS `theMessage`
+  - `getActiveAccount()` VS `getActiveAccounts()` VS `getActiveAccountInfo()` - 서로의 역할을 구분하기 어려움
+
+<a name="5"></a>
+
+## 발음하기 쉬운 이름을 사용하라
+
+```java
+// Bad
+class DtaRcrd102 {
+    private Date genymdhms;
+    private Date modymdhms;
+    private final String pszqint = "102";
+    /* ... */
+};
+```
+
+```java
+// Good
+class Customer {
+    private Date generationTimestamp;
+    private Date modificationTimestamp;
+    private final String recordId = "102";
+    /* ... */
+};
+```
+
+<a name="6"></a>
+
+## 검색하기 쉬운 이름을 사용하라
