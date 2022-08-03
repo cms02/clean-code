@@ -1,4 +1,5 @@
-- [들어가면서](#1)
+a- [들어가면서](#1)
+
 - [의도를 분명히 밝혀라](#2)
 - [그릇된 정보를 피하라](#3)
 - [의미 있게 구분하라](#4)
@@ -136,3 +137,170 @@ class Customer {
 <a name="6"></a>
 
 ## 검색하기 쉬운 이름을 사용하라
+
+- 문자 하나를 사용하는 이름과 상수는 텍스트 코드에서 쉽게 눈에 띄지 않는다.
+  - 찾아서 고치지 힘들다.
+- 이름의 길이는 범위 크기에 비례해야 한다.
+
+<a name = "7"></a>
+
+## 인코딩을 피해라
+
+#### 접두어를 통해 범위 정보까지 인코딩에 넣지말자.
+
+- 헝가리안 표기법
+- 멤버 변수 접두어
+- 인터페이스 클래스와 구현 클래스
+
+<a name = "8"></a>
+
+## 자신의 기억력을 자랑하지 마라
+
+- 코드를 읽는 사람이 읽으면서 변수 이름을 자신이 아는 이름으로 변환해야 한다면 좋지 않은 이름이다.
+- 루프에서 반복 횟수를 세는 변수 i, j, k는 괜찮다.(단, 루프의 범위가 아주 작고 다른 이름과 충돌하지 않을 경우)
+- 이름은 간단하고 명료할수록 좋다.
+
+<a name = "9"></a>
+
+## 클래스 이름
+
+- 클래스 이름과 객체 이름은 명사나 명사구가 적합하다.
+- Manager, Processor, Data, Info 와 같은 단어는 피한다.
+
+<a name = "10"></a>
+
+## 메서드 이름
+
+- 메서드 이름은 동사나 동사구가 적합하다.
+- 생성자를 중복 정의할 때는 정적 팩토리 메서드를 사용한다.
+
+```java
+//Bad
+Complex fulcrumPoint = new Complex(23.0);
+
+//Good
+Complex fulcrumPoint = Complex.FromRealNumber(23.0);
+```
+
+<a name = "11"></a>
+
+## 기발한 이름은 피하라
+
+- 특정 문화에서만 사용되는 재미있는 이름보다 의도를 분명히 표현하는 이름을 사용하라.
+  - whack() => kill()
+
+<a name = "12"></a>
+
+## 한개념에 한 단어를 사용하라
+
+- 추상적인 개념 하나에 단어 하나를 사용하자
+  - fetch, retrieve, get
+  - controller, manager, driver
+
+<a name = "13"></a>
+
+## 말장난을 하지 마라
+
+- 한 단어를 두 가지 목적으로 사용하지 마라.
+- add 라는 메서드를 사용하다가 다른 맥락의 '추가하다' 라는 메서드를 사용하려 한다면 add가 아닌 다른 이름을 사용하여야 한다.
+
+<a name = "14"></a>
+
+## 해법 영역에서 가져온 이름을 사용하라
+
+- 개발자라면 당연히 알고 있을 JobQueue, AccountVisitor(Visitor pattern)등을 사용하지 않을 이유는 없다. 전산용어, 알고리즘 이름, 패턴 이름, 수학 용어 등은 사용하자.
+
+<a name = "15"></a>
+
+## 문제 영역에서 가져온 이름을 사용하라
+
+- 적절한 프로그래머 용어가 없거나 문제 영역과 관련이 깊은 용어의 경우 문제 영역 용어를 사용하자.
+
+<a name = "16"></a>
+
+## 의미 있는 맥락을 추가하라
+
+- 클래스, 함수, namespace 등으로 감싸서 맥락(Context)을 표현하라.
+- 그래도 불분명하다면 접두어를 사용하자.
+
+```java
+// Bad
+private void printGuessStatistics(char candidate, int count) {
+    String number;
+    String verb;
+    String pluralModifier;
+    if (count == 0) {
+        number = "no";
+        verb = "are";
+        pluralModifier = "s";
+    }  else if (count == 1) {
+        number = "1";
+        verb = "is";
+        pluralModifier = "";
+    }  else {
+        number = Integer.toString(count);
+        verb = "are";
+        pluralModifier = "s";
+    }
+    String guessMessage = String.format("There %s %s %s%s", verb, number, candidate, pluralModifier );
+
+    print(guessMessage);
+}
+```
+
+```java
+// Good
+public class GuessStatisticsMessage {
+    private String number;
+    private String verb;
+    private String pluralModifier;
+
+    public String make(char candidate, int count) {
+        createPluralDependentMessageParts(count);
+        return String.format("There %s %s %s%s", verb, number, candidate, pluralModifier );
+    }
+
+    private void createPluralDependentMessageParts(int count) {
+        if (count == 0) {
+            thereAreNoLetters();
+        } else if (count == 1) {
+            thereIsOneLetter();
+        } else {
+            thereAreManyLetters(count);
+        }
+    }
+
+    private void thereAreManyLetters(int count) {
+        number = Integer.toString(count);
+        verb = "are";
+        pluralModifier = "s";
+    }
+
+    private void thereIsOneLetter() {
+        number = "1";
+        verb = "is";
+        pluralModifier = "";
+    }
+
+    private void thereAreNoLetters() {
+        number = "no";
+        verb = "are";
+        pluralModifier = "s";
+    }
+}
+```
+
+<a name = "17"></a>
+
+## 불필요한 맥락을 없애라
+
+- 일반적으로 짧은 이름이 긴 이름보다 좋다. 단, 의미가 분명한 경우에 한해서다. 이름에 불필요한 맥락을 추가하지 않도록 주의한다.
+
+  - Gas Station Delux 라는 어플리케이션의 클래스 이름의 앞에 GSD를 붙이지 말자.
+
+  <a name = "18"></a>
+
+## 마치면서
+
+- 이름을 바꾸는 것에 두려워 하지 말자. 다른 개발자들이 좋은 이름으로 바꿔준다면 감사할 일이다.
+- 이름을 개선하면, 단기적인 효과는 물론 장기적인 이익도 보장한다.
