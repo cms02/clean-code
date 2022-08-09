@@ -73,3 +73,48 @@
 <a name="4"></a>
 
 ## Switch 문
+
+```java
+public Money calculatePay(Employee e) throws InvalidEmployeeType {
+	switch (e.type) {
+		case COMMISSIONED:
+			return calculateCommissionedPay(e);
+		case HOURLY:
+			return calculateHourlyPay(e);
+		case SALARIED:
+			return calculateSalariedPay(e);
+		default:
+			throw new InvalidEmployeeType(e.type);
+	}
+}
+```
+
+- Switch 문은 작게 만들기 어렵다(if/else도 마찬가지).
+- 다형성을 이용하여 Switch문을 추상 팩토리(Abstract Factory)에 숨겨 다형적 객체를 생성하는 코드 안에서만 Switch 문을 사용하도록 하자.
+
+```java
+public abstract class Employee {
+	public abstract boolean isPayday();
+	public abstract Money calculatePay();
+	public abstract void deliverPay(Money pay);
+}
+-----------------
+public interface EmployeeFactory {
+	public Employee makeEmployee(EmployeeRecord r) throws InvalidEmployeeType;
+}
+-----------------
+public class EmployeeFactoryImpl implements EmployeeFactory {
+	public Employee makeEmployee(EmployeeRecord r) throws InvalidEmployeeType {
+		switch (r.type) {
+			case COMMISSIONED:
+				return new CommissionedEmployee(r) ;
+			case HOURLY:
+				return new HourlyEmployee(r);
+			case SALARIED:
+				return new SalariedEmploye(r);
+			default:
+				throw new InvalidEmployeeType(r.type);
+		}
+	}
+}
+```
