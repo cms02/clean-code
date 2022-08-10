@@ -118,3 +118,77 @@ public class EmployeeFactoryImpl implements EmployeeFactory {
 	}
 }
 ```
+
+<a name="5"></a>
+
+## 서술적인 이름을 사용하라!
+
+- 함수가 작고 단순할수록 서술적인 이름을 고르기 쉬워진다.
+- 서술적인 이름을 사용하면 개발자 머릿속에서도 설계가 뚜렷해진다.
+- 단, 이름을 붙일 때는 일관성이 있어야 한다.
+
+<a name="6"></a>
+
+## 함수 인수
+
+- 함수에서 이상적인 인수 개수는 0개(무항)이다. 차선은 1개뿐인 경우이다.
+
+<a name="6-1"></a>
+
+#### 많이 쓰는 단항 형식
+
+- 인수에 질문을 던지는 경우
+  - `boolean fileExists("MyFile");`
+- 인수를 뭔가로 변환해 결과를 반환하는 경우
+  - `InputStream fileOpen(“MyFile”);`
+- 이벤트 함수일 경우
+
+위의 경우들이 아니라면 단항 함수는 가급적 피하는 것이 좋다.
+
+<a name="6-2"></a>
+
+#### 플래그 인수
+
+- `플래그 인수란 함수가 실행하는 로직을 선택하기 위해 전달하는 인수이다`
+- 플래그 인수는 `절대 쓰지말자`. 추하다.
+- 함수가 한꺼번에 여거 가지를 처리한다고 대놓고 공표하는 셈이다.
+
+<a name="6-3"></a>
+
+#### 이항 함수
+
+- 단항 함수보다 이해하기 어렵다.
+- 물론 이항 함수가 적절한 경우도 있다.
+  - `Point p = new Point(0,0)`
+- 가능한 단항 함수로 바꾸도록 노력하자.
+
+<a name="6-4"></a>
+
+#### 삼항 함수
+
+- 이항 함수보다 훨씬 더 이해하기 어렵다.
+- 삼항 함수를 만들 때는 신중이 고려하자.
+
+<a name="6-5"></a>
+
+#### 인수 객체
+
+- 인수가 많이 필요할 경우, 일부 인수를 독자적인 클래스 변수로 선언할 가능성을 살펴보자.
+  - `Circle makeCircle(double x, double y, double radius)`
+  - `Circle makeCircle(Point center, double radius)`
+
+<a name="6-6"></a>
+
+#### 인수 목록
+
+- 때로는 String.format 같은 가변적인 함수도 필요하다.
+- `String.format("%s worked %.2f" hours., name, hours);`
+
+<a name="6-5"></a>
+
+#### 동사와 키워드
+
+- 단항 함수는 함수와 인수가 동사/명사 쌍을 이뤄야한다.
+  - `writeField(name)`
+- 함수 이름에 `키워드(인수 이름)`를 추가하면 인수 순서를 기억하지 않아도 된다.
+  - `assertExpectedEqualsActual(expected, actual);`
