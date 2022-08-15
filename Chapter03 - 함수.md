@@ -192,3 +192,148 @@ public class EmployeeFactoryImpl implements EmployeeFactory {
   - `writeField(name)`
 - 함수 이름에 `키워드(인수 이름)`를 추가하면 인수 순서를 기억하지 않아도 된다.
   - `assertExpectedEqualsActual(expected, actual);`
+
+<a name="7"></a>
+
+## 부수 효과를 일으키지 마라!
+
+- 함수에서 한 가지를 하겠다고 약속하고선 남몰래 다른 짓을 하는 것이므로, `부수효과`는 거짓말이다.
+- 아래에서 `Session.initialize();`는 부수 효과이다.
+
+```java
+public class UserValidator {
+	private Cryptographer cryptographer;
+	public boolean checkPassword(String userName, String password) {
+		User user = UserGateway.findByName(userName);
+		if (user != User.NULL) {
+			String codedPhrase = user.getPhraseEncodedByPassword();
+			String phrase = cryptographer.decrypt(codedPhrase, password);
+			if ("Valid Password".equals(phrase)) {
+				Session.initialize();
+				return true;
+			}
+		}
+		return false;
+	}
+}
+```
+
+<a name="7-1"></a>
+
+#### 출력 인수
+
+- 일반적으로 출력 인수는 피해야 한다.
+- 객체 지향 언어에서는 출력 인수를 사용할 필요가 거의 없다.
+- 함수에서 상태를 변경해야 한다면, 함수가 속한 객체 상태를 변경하는 방식을 택하자.
+
+```java
+appendFooter(report); 	//X
+report.appendFoorter();	//O
+```
+
+<a name="8"></a>
+
+## 명령과 조회를 분리하라!
+
+- 함수는 뭔가를 수행하거나 뭔가에 답하거나 둘 중 하나만 해야 한다.
+- `public boolean set(String attribute, String value);`
+  - `if(set(“username”, “unclebob”))...`
+  - 괴상한 코드가 나온다.
+- 해결책은 명령과 조회를 분리해 혼란을 애초에 뿌리뽑는 것이다.
+
+```java
+if (attributeExists("username")){   		//조회
+	setAttribute("username", "unclebob");	//명령
+	...
+}
+```
+
+<a name="9"></a>
+
+## 오류 코드보다 예외를 사용하라!
+
+- 오류 코드를 반환하면 호출자는 오류 코드를 곧바로 처리해야 한다는 문제에 부딪힌다.
+
+```java
+if (deletePage(page) == E_OK) {
+	if (registry.deleteReference(page.name) == E_OK) {
+		if (configKeys.deleteKey(page.name.makeKey()) == E_OK) {
+			logger.log("page deleted");
+		} else {
+			logger.log("configKey not deleted");
+		}
+	} else {
+		logger.log("deleteReference from registry failed");
+	}
+} else {
+	logger.log("delete failed");
+	return E_ERROR;
+}
+```
+
+- 오류 코드 대신 예외를 사용하면 코드가 깔끔해진다.
+
+```java
+try{
+	deletePage(page);
+	registry.deleteReference(page.name);
+	configKeys.deleteKey(page.name.makeKey());
+}
+catch (Exception e){
+	logger.log(e.getMessage());
+}
+
+```
+
+<a name="9-1"></a>
+
+#### Try/Catch 블록 뽑아내기
+
+- Try/Catch 블록은 코드 구조에 혼란을 일으키며, 정상 동작과 오류 처리 동작을 뒤섞는다.
+- 그러므로 Try/Catch 블록을 별도 함수로 뽑는 것이 좋다.
+
+```java
+public void delete(Page page) {
+	try {
+		deletePageAndAllReferences(page);
+  	} catch (Exception e) {
+  		logError(e);
+  	}
+}
+
+private void deletePageAndAllReferences(Page page) throws Exception {
+	deletePage(page);
+	registry.deleteReference(page.name);
+	configKeys.deleteKey(page.name.makeKey());
+}
+
+private void logError(Exception e) {
+	logger.log(e.getMessage());
+}
+```
+
+<a name="9-2"></a>
+
+#### 오류 처리도 '한 가지' 작업이다.
+
+- 오류 처리도 `한 가지` 작업에 속한다.
+- 그러므로 오류를 처리하는 함수는 오류만 처리해야 마땅하다.
+
+<a name="9-3"></a>
+
+#### Error.java 의존성 자석
+
+```java
+public enum Error {
+	OK,
+	INVALID,
+	NO_SUCH,
+	LOCKED,
+	OUT_OF_RESOURCES,
+	WAITING_FOR_EVENT;
+}
+```
+
+- 위와 같은 클래스는 의존성 자석이다.
+- 새 오류 코드를 추가 및 변경 시 번거롭다.
+- 그러므로 예외를 사용하는 것이 더 안전하다.
