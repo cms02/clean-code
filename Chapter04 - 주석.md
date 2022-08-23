@@ -95,3 +95,92 @@ protected abstract Responder responderInstance();
 Pattern timeMatcher = Pattern.compile("\\d*:\\d*\\d* \\w*, \\w*, \\d*, \\d*");
 ```
 - 해당 코드 또한 시각과 날짜를 반환하는 클래스를 만들어 코드를 옮기면 주석이 필요 없어진다.
+
+<a name="3-3"></a>
+
+#### 의도를 설명하는 주석
+- 떄때로 주석은 구현을 이해하게 도와주는 선을 넘어 결정에 깔린 의도까지 설명한다.
+```java
+// 스레드를 대량 생성하는 방법으로 어떻게든 경쟁 조건을 만들려 시도한다. 
+for (int i = 0; i > 2500; i++) {
+    WidgetBuilderThread widgetBuilderThread = 
+        new WidgetBuilderThread(widgetBuilder, text, parent, failFlag);
+    Thread thread = new Thread(widgetBuilderThread);
+    thread.start();
+}
+```
+
+<a name="3-4"></a>
+
+#### 의미를 명료하게 밝히는 주석
+
+- 일반적으로 인수나 반환값 자체를 명확하게 만들면 좋겠지만, 인수나 반환값이 표준 라이브러리나 변경하지 못하는 코드에 속한다면 의미를 명료하게 밝히는 주석이 유용하다.
+
+```java
+public void testCompareTo() throws Exception {
+    WikipagePath a = PathParser.parse("PageA");
+    WikiPagePath ab = PathParser.parse("PageA. PageB");
+    Wikipagepath b = PathParser.parse("PageB");
+    WikiPagepath aa = PathParser.parse("PageA.PageA");
+    WikiPagePath bb = PathParser.parse("PageB. PageB");
+    WikipagePath ba = PathParser.parse("PageB. PageA");
+
+    assertTrue(a.compareTo(a) == 0); // a == a
+    assertTrue(a.compareTo(b) != 0); // a != b
+    assertTrue(ab.compareTo(ab) == 0); // ab == ab
+    assertTrue(a.compareTo(b) == -1); // a < b
+    assertTrue(aa.compareTo(ab) == -1); // aa < ab
+    assertTrue(ba.compareTo(bb) == -1); // ba < bb
+    assertTrue(b.compareTo(a) == 1); // b > a
+    assertTrue(ab.compareTo(aa) == 1); // ab > aa
+    assertTrue(bb.compareTo(ba) == 1); // bb > ba
+}
+```
+- 그릇된 주석을 달아놓을 위험이 상당히 높으므로 더 나은 방법이 없는지 고민하고 정확히 달도록 각별히 주의하자.
+
+<a name="3-5"></a>
+
+#### 결과를 경고하는 주석
+
+```java
+// 여유 시간이 충분하지 않다면 실행하지 마십시오.
+public void _testWithReallyBigFile() {
+
+}
+```
+
+<a name="3-6"></a>
+
+#### TODO 주석
+
+- TODO 주석은 프로그래머가 필요하다 여기지만 당장 구현하기 어려운 업무를 기술한다.
+- 그래도 TODO로 떡칠한 코드는 바람직하지 않으므로 주기적으로 TODO 주석을 점검해 없애도 괜찮은 주석은 없애라고 권한다.
+
+```java
+// TODO-MdM 현재 필요하지 않다.
+// 체크아웃 모델을 도입하면 함수가 필요 없다.
+protected VersionInfo makeVersion() throws Exception {
+    return null;
+}
+```
+
+<a name="3-7"></a>
+
+#### 중요성을 강조하는 주석
+
+- 자칫 대수롭지 않다고 여겨질 뭔가의 중요성을 강조하기 위해서도 주석을 사용한다.
+```java
+String listItemContent = match.group(3).trim();
+// 여기서 trim은 정말 중요하다. trim 함수는 문자열에서 시작 공백을 제거한다.
+// 문자열에 시작 공백이 있으면 다른 문자열로 인식되기 때문이다. 
+new ListItemWidget(this, listItemContent, this.level + 1);
+return buildList(text.substring(match.end()));
+```
+
+<a name="3-8"></a>
+
+#### 공개 API에서 Javadocs
+
+- 설명이 잘 된 공개 API는 참으로 유용하고 만족스럽다. 공개 API를 구현한다면 반드시 훌륭한 Javadocs 작성을 추천한다. 하지만 여느 주석과 마찬가지로 Javadocs 역시 독자를 오도하거나, 잘못 위치하거나, 그릇된 정보를 전달할 가능성이 존재하는 것 역시 잊으면 안 된다.
+
+
