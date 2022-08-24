@@ -183,4 +183,25 @@ return buildList(text.substring(match.end()));
 
 - 설명이 잘 된 공개 API는 참으로 유용하고 만족스럽다. 공개 API를 구현한다면 반드시 훌륭한 Javadocs 작성을 추천한다. 하지만 여느 주석과 마찬가지로 Javadocs 역시 독자를 오도하거나, 잘못 위치하거나, 그릇된 정보를 전달할 가능성이 존재하는 것 역시 잊으면 안 된다.
 
+<a name="3-9"></a>
+
+## 나쁜주석
+
+#### 주절거리는 주석
+
+```java
+public void loadProperties() {
+    try {
+        String propertiesPath = propertiesLocation + "/" + PROPERTIES_FILE;
+        FileInputStream propertiesStream = new FileInputStream(propertiesPath);
+        loadedProperties.load(propertiesStream);
+    } catch (IOException e) {
+        // 속성 파일이 없다면 기본값을 모두 메모리로 읽어 들였다는 의미다. 
+    }
+}
+````
+- 특별한 이유가 없이 달리는 주석이다.
+- catch 블록의 주석을 정확히 이해하려면 다른 코드를 뒤져보는 수 밖에 없다.
+
+
 
