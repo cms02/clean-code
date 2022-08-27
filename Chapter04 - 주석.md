@@ -34,6 +34,7 @@
   - [비공개 코드에서 Javadocs](#4-18)
 
 ---
+
 <br>
 
 > 나쁜 코드에 주석을 달지 마라. 새로 짜라. - 브라이언 W. 커니핸, P.J. 플라우거
@@ -46,6 +47,7 @@
 <a name="1"></a>
 
 ## 주석은 나쁜 코드를 보완하지 못한다.
+
 - 코드에 주석을 추가하는 일반적인 이유는 코드의 품질이 나쁘기 때문이다.
 - 자신이 저지른 난장판을 주석으로 설명하려 애쓰는 대신에 그 난장판을 깨끗이 치우는 데 시간을 보내라!
 
@@ -54,13 +56,14 @@
 ## 코드로 의도를 표현하라!
 
 ```java
-// 직원에게 복지 혜택을 받을 자격이 있는지 검사한다. 
+// 직원에게 복지 혜택을 받을 자격이 있는지 검사한다.
 if ((emplotee.flags & HOURLY_FLAG) && (employee.age > 65))
 ```
 
 ```java
 if (employee.isEligibleForFullBenefits())
 ```
+
 - 많은 경우 주석으로 달려는 설명을 함수로 만들어 표현해도 충분하다.
 
 <a name="3"></a>
@@ -72,6 +75,7 @@ if (employee.isEligibleForFullBenefits())
 <a name="3-1"></a>
 
 #### 법적인 주석
+
 - 떄로는 회사가 정립한 구현 표준에 맞춰 법적인 이유로 특정 주석을 넣으라고 명시한다.
 
 ```java
@@ -87,6 +91,7 @@ if (employee.isEligibleForFullBenefits())
 // 테스트 중인 Responder 인스턴스를 반환
 protected abstract Responder responderInstance();
 ```
+
 - 위의 코드 또한 함수 이름을 responderBeingTested로 바꾸면 주석이 필요없어 진다.
 - 아래는 좀 더 나은 예제이다.
 
@@ -94,16 +99,19 @@ protected abstract Responder responderInstance();
 // kk:mm:ss EEE, MMM dd, yyyy 형식이다.
 Pattern timeMatcher = Pattern.compile("\\d*:\\d*\\d* \\w*, \\w*, \\d*, \\d*");
 ```
+
 - 해당 코드 또한 시각과 날짜를 반환하는 클래스를 만들어 코드를 옮기면 주석이 필요 없어진다.
 
 <a name="3-3"></a>
 
 #### 의도를 설명하는 주석
+
 - 떄때로 주석은 구현을 이해하게 도와주는 선을 넘어 결정에 깔린 의도까지 설명한다.
+
 ```java
-// 스레드를 대량 생성하는 방법으로 어떻게든 경쟁 조건을 만들려 시도한다. 
+// 스레드를 대량 생성하는 방법으로 어떻게든 경쟁 조건을 만들려 시도한다.
 for (int i = 0; i > 2500; i++) {
-    WidgetBuilderThread widgetBuilderThread = 
+    WidgetBuilderThread widgetBuilderThread =
         new WidgetBuilderThread(widgetBuilder, text, parent, failFlag);
     Thread thread = new Thread(widgetBuilderThread);
     thread.start();
@@ -136,6 +144,7 @@ public void testCompareTo() throws Exception {
     assertTrue(bb.compareTo(ba) == 1); // bb > ba
 }
 ```
+
 - 그릇된 주석을 달아놓을 위험이 상당히 높으므로 더 나은 방법이 없는지 고민하고 정확히 달도록 각별히 주의하자.
 
 <a name="3-5"></a>
@@ -169,10 +178,11 @@ protected VersionInfo makeVersion() throws Exception {
 #### 중요성을 강조하는 주석
 
 - 자칫 대수롭지 않다고 여겨질 뭔가의 중요성을 강조하기 위해서도 주석을 사용한다.
+
 ```java
 String listItemContent = match.group(3).trim();
 // 여기서 trim은 정말 중요하다. trim 함수는 문자열에서 시작 공백을 제거한다.
-// 문자열에 시작 공백이 있으면 다른 문자열로 인식되기 때문이다. 
+// 문자열에 시작 공백이 있으면 다른 문자열로 인식되기 때문이다.
 new ListItemWidget(this, listItemContent, this.level + 1);
 return buildList(text.substring(match.end()));
 ```
@@ -183,9 +193,11 @@ return buildList(text.substring(match.end()));
 
 - 설명이 잘 된 공개 API는 참으로 유용하고 만족스럽다. 공개 API를 구현한다면 반드시 훌륭한 Javadocs 작성을 추천한다. 하지만 여느 주석과 마찬가지로 Javadocs 역시 독자를 오도하거나, 잘못 위치하거나, 그릇된 정보를 전달할 가능성이 존재하는 것 역시 잊으면 안 된다.
 
-<a name="3-9"></a>
+<a name="4"></a>
 
 ## 나쁜주석
+
+<a name="4-1"></a>
 
 #### 주절거리는 주석
 
@@ -196,12 +208,93 @@ public void loadProperties() {
         FileInputStream propertiesStream = new FileInputStream(propertiesPath);
         loadedProperties.load(propertiesStream);
     } catch (IOException e) {
-        // 속성 파일이 없다면 기본값을 모두 메모리로 읽어 들였다는 의미다. 
+        // 속성 파일이 없다면 기본값을 모두 메모리로 읽어 들였다는 의미다.
     }
 }
-````
+```
+
 - 특별한 이유가 없이 달리는 주석이다.
 - catch 블록의 주석을 정확히 이해하려면 다른 코드를 뒤져보는 수 밖에 없다.
 
+<a name="4-2"></a>
 
+#### 같은 이야기를 중복하는 주석
 
+- 헤더에 달린 주석이 같은 코드 내용을 그대로 중복한다면, 코드보다 주석을 읽는 시간이 더 오래 걸릴 수 있다.
+
+```java
+// this.closed가 true일 때 반환되는 유틸리티 메서드다.
+// 타임아웃에 도달하면 예외를 던진다.
+public synchronized void waitForClose(final long timeoutMillis) throws Exception {
+    if (!closed) {
+        wait(timeoutMillis);
+        if (!closed) {
+            throw new Exception("MockResponseSender could not be closed");
+        }
+    }
+}
+```
+
+<a name="4-3"></a>
+
+#### 오해할 여지가 있는 주석
+
+- 위 코드를 다시 보자. 중복이 많으면서도 오해할 여지가 살짝 있다. this.closed가 true로 변하는 순간에 메서드는 반환되지 않는다. this.closed가 true여야 메서드는 반환된다. 아니면 무조건 타임아웃을 기다렸다 this.closed가 그래도 true가 아니면 예외를 던진다. 주석에 담긴 '살짝 잘못된 정보'로 인해 어느 프로그래머가 경솔하게 함수를 호출해 자기 코드가 아주 느려진 이유를 못찾게 되는 것이다.
+
+<a name="4-4"></a>
+
+#### 의무적으로 다는 주석
+
+- 모든 함수에 Javadocs를 달거나 모든 변수에 주석을 달아야 한다는 규칙은 어리석기 그지없다.
+- 이러한 주석은 코드를 복잡하게 만들며, 거짓말을 퍼뜨리고, 혼동과 무질서를 초래한다.
+
+```java
+/**
+ *
+ * @param title CD 제목
+ * @param author CD 저자
+ * @param tracks CD 트랙 숫자
+ * @param durationInMinutes CD 길이(단위: 분)
+ */
+public void addCD(String title, String author, int tracks, int durationInMinutes) {
+    CD cd = new CD();
+    cd.title = title;
+    cd.author = author;
+    cd.tracks = tracks;
+    cd.duration = durationInMinutes;
+    cdList.add(cd);
+}
+```
+
+<a name="4-5"></a>
+
+#### 이력을 기록하는 주석
+
+- 현재는 소스 코드 관리 시스템이 있으므로 아래와 같은 주석은 제거하는 것이 바람직하다.
+
+```java
+* 변경 이력 (11-Oct-2001부터)
+* ------------------------------------------------
+* 11-Oct-2001 : 클래스를 다시 정리하고 새로운 패키징
+* 05-Nov-2001: getDescription() 메소드 추가
+* 이하 생략
+```
+
+<a name="4-6"></a>
+
+#### 있으나 마나 한 주석
+
+- 너무 당연한 사실을 언급하며 새로운 정보를 제공하지 못하는 주석이다.
+
+```java
+/*
+ * 월 중 일자를 반환한다.
+ *
+ * @return 월 중 일자
+ */
+public int getDayOfMonth() {
+    return dayOfMonth;
+}
+```
+
+- 위와 같은 주석은 지나친 참견이라 개발자가 주석을 무시하는 습관에 빠지게 한다.
