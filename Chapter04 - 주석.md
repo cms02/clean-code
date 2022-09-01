@@ -298,3 +298,38 @@ public int getDayOfMonth() {
 ```
 
 - 위와 같은 주석은 지나친 참견이라 개발자가 주석을 무시하는 습관에 빠지게 한다.
+
+<a name="4-7"></a>
+
+#### 무서운 잡음
+
+- Javadocs도 때로는 잡음이다. 아래의 Javadocs는 어떠한 목적도 수행하지 않는다. 단지 문서를 제공해야 한다는 잘못된 욕심으로 탄생한 잡음이다.
+```java
+/** The name. */
+private String name;
+
+/** The version. */
+private String version;
+
+/** The licenceName. */
+private String licenceName;
+
+/** The version. */
+private String info;
+```
+
+<a name="4-8"></a>
+
+#### 함수나 변수로 표현할 수 있다면 주석을 달지 마라.
+
+```java
+// 전역 목록 <smodule>에 속하는 모듈이 우리가 속한 하위 시스템에 의존하는가?
+if (module.getDependSubsystems().contains(subSysMod.getSubSystem()))
+```
+- 주석을 제거하면 아래와 같다.
+```java
+ArrayList moduleDependencies = smodule.getDependSubSystems();
+String ourSubSystem = subSysMod.getSubSystem();
+if (moduleDependees.contains(ourSubSystem))
+```
+
