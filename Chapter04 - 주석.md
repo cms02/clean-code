@@ -333,3 +333,12 @@ String ourSubSystem = subSysMod.getSubSystem();
 if (moduleDependees.contains(ourSubSystem))
 ```
 
+<a name="4-9"></a>
+
+#### 위치를 표시하는 주석
+
+```java
+// Actions ///////////////////////
+```
+- 극히 드물지만 위와 같은 배너 아래 특정 기능을 모아놓으면 유용한 경우도 있지만 일반적으로는 이런 주석은 가독성만 낮춘다.
+- 특히 슬래시로 이어지는 잡음은 제거하는 것이 좋다.
